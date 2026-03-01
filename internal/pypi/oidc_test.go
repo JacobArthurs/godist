@@ -116,6 +116,45 @@ func TestExchangeForUploadToken_Success(t *testing.T) {
 	}
 }
 
+func TestExchangeForUploadToken_NotFound(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "<html>404</html>", http.StatusNotFound)
+	}))
+	defer server.Close()
+
+	orig := pypiMintTokenURL
+	pypiMintTokenURL = server.URL
+	defer func() { pypiMintTokenURL = orig }()
+
+	_, err := exchangeForUploadToken("oidc-jwt")
+	if err == nil {
+		t.Fatal("expected error for 404 status, got nil")
+	}
+	if !strings.Contains(err.Error(), "no trusted publisher found") {
+		t.Errorf("expected 'no trusted publisher found' in error, got: %v", err)
+	}
+}
+
+func TestExchangeForUploadToken_JSONError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		_ = json.NewEncoder(w).Encode(map[string]string{"message": "token claims do not match"})
+	}))
+	defer server.Close()
+
+	orig := pypiMintTokenURL
+	pypiMintTokenURL = server.URL
+	defer func() { pypiMintTokenURL = orig }()
+
+	_, err := exchangeForUploadToken("oidc-jwt")
+	if err == nil {
+		t.Fatal("expected error for 422 status, got nil")
+	}
+	if !strings.Contains(err.Error(), "token claims do not match") {
+		t.Errorf("expected JSON message in error, got: %v", err)
+	}
+}
+
 func TestExchangeForUploadToken_NonOKStatus(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "forbidden", http.StatusForbidden)

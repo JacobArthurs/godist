@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var pypiMintTokenURL = "https://pypi.org/oidc/mint-token/"
+var pypiMintTokenURL = "https://pypi.org/_/oidc/mint-token/"
 
 func mintToken() (string, error) {
 	if token := os.Getenv("PYPI_TOKEN"); token != "" {
@@ -99,7 +99,19 @@ func exchangeForUploadToken(oidcToken string) (string, error) {
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusNotFound {
+			return "", fmt.Errorf(
+				"no trusted publisher found for this workflow\n" +
+					"register one at https://pypi.org/manage/account/publishing/",
+			)
+		}
 		raw, _ := io.ReadAll(resp.Body)
+		var apiErr struct {
+			Message string `json:"message"`
+		}
+		if json.Unmarshal(raw, &apiErr) == nil && apiErr.Message != "" {
+			return "", fmt.Errorf("PyPI returned status %d: %s", resp.StatusCode, apiErr.Message)
+		}
 		return "", fmt.Errorf("PyPI mint-token returned status %d: %s", resp.StatusCode, string(raw))
 	}
 
