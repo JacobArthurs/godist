@@ -80,10 +80,14 @@ func npmError(out []byte) string {
 	outStr := string(out)
 	for line := range strings.SplitSeq(outStr, "\n") {
 		line = strings.TrimSpace(line)
-		if !strings.HasPrefix(line, "npm ERR! code ") {
+		code, ok := strings.CutPrefix(line, "npm ERR! code ")
+		if !ok {
+			code, ok = strings.CutPrefix(line, "npm error code ")
+		}
+		if !ok {
 			continue
 		}
-		switch strings.TrimPrefix(line, "npm ERR! code ") {
+		switch code {
 		case "EOTP":
 			return "2FA is blocking publish: generate and use a token with 2FA disabled"
 		case "ENEEDAUTH", "E401":
