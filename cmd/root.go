@@ -17,6 +17,7 @@ var (
 	flagLicense   string
 	flagDryRun    bool
 	flagReadme    string
+	flagNoReadme  bool
 )
 
 var rootCmd = &cobra.Command{
@@ -36,7 +37,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&flagSummary, "summary", "", "short description of the package (optional)")
 	rootCmd.PersistentFlags().StringVar(&flagLicense, "license", "", "license identifier (e.g. MIT, Apache-2.0)")
 	rootCmd.PersistentFlags().BoolVar(&flagDryRun, "dry-run", false, "print what would be published without publishing")
-	rootCmd.PersistentFlags().StringVar(&flagReadme, "readme", "", "path to README to include in the published package (optional)")
+	rootCmd.PersistentFlags().StringVar(&flagReadme, "readme", "", "path to README file (auto-detects README.md/.rst/.txt in current directory if not set)")
+	rootCmd.PersistentFlags().BoolVar(&flagNoReadme, "no-readme", false, "disable README auto-detection and omit readme from the package")
 
 	if err := rootCmd.MarkPersistentFlagRequired("name"); err != nil {
 		panic(err)

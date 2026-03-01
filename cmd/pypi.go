@@ -43,7 +43,7 @@ func buildPypiConfig() (*pypi.Config, error) {
 		Artifacts: artifacts,
 		Summary:   flagSummary,
 		License:   flagLicense,
-		Readme:    flagReadme,
+		Readme:    config.ResolveReadme(flagReadme, flagNoReadme),
 		DryRun:    flagDryRun,
 	}
 

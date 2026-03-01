@@ -55,8 +55,8 @@ func buildNpmConfig() (*npm.Config, error) {
 		Org:        flagOrg,
 		Tag:        flagTag,
 		Provenance: flagProvenance,
-		Readme:     flagReadme,
-		Repository: flagRepository,
+		Readme:     config.ResolveReadme(flagReadme, flagNoReadme),
+		Repository: config.ResolveRepository(flagRepository),
 	}
 
 	return cfg, nil

@@ -21,8 +21,12 @@ inputs:
     description: License identifier (e.g. MIT, Apache-2.0)
     required: false
   readme:
-    description: Path to README file to include in the published package
+    description: Path to README file. Auto-detects README.md/.rst/.txt in repo root by default.
     required: false
+  no-readme:
+    description: Disable README auto-detection and omit readme from the package
+    required: false
+    default: 'false'
   dry-run:
     description: Print what would be published without publishing
     required: false
@@ -95,14 +99,14 @@ runs:
         [[ -n "${{ inputs.version }}" ]] && ARGS+=(--version "${{ inputs.version }}")
         [[ -n "${{ inputs.summary }}" ]] && ARGS+=(--summary "${{ inputs.summary }}")
         [[ -n "${{ inputs.license }}" ]] && ARGS+=(--license "${{ inputs.license }}")
-        [[ -n "${{ inputs.readme }}" ]]  && ARGS+=(--readme "${{ inputs.readme }}")
+        [[ -n "${{ inputs.readme }}" ]] && ARGS+=(--readme "${{ inputs.readme }}")
+        [[ "${{ inputs.no-readme }}" == "true" ]] && ARGS+=(--no-readme)
         [[ "${{ inputs.dry-run }}" = "true" ]] && ARGS+=(--dry-run)
 
         if [[ "${{ inputs.registry }}" = "npm" ]]; then
           [[ -n "${{ inputs.org }}" ]] && ARGS+=(--org "${{ inputs.org }}")
           ARGS+=(--tag "${{ inputs.tag }}")
           ARGS+=("--provenance=${{ inputs.provenance }}")
-          [[ -n "$GITHUB_SERVER_URL" && -n "$GITHUB_REPOSITORY" ]] && ARGS+=(--repository "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY")
           shipbin npm "${ARGS[@]}"
 
         elif [[ "${{ inputs.registry }}" = "pypi" ]]; then

@@ -101,3 +101,36 @@ func normalizeVersion(v string) (string, error) {
 	}
 	return v, nil
 }
+
+// ResolveReadme returns the readme path to use. If noReadme is true, returns
+// empty. If explicit is set, returns it. Otherwise auto-detects common readme
+// filenames in the current directory.
+func ResolveReadme(explicit string, noReadme bool) string {
+	if noReadme {
+		return ""
+	}
+	if explicit != "" {
+		return explicit
+	}
+	for _, name := range []string{"README.md", "README.rst", "README.txt", "README"} {
+		if _, err := os.Stat(name); err == nil {
+			return name
+		}
+	}
+	return ""
+}
+
+// ResolveRepository returns the repository URL to use. If explicit is set,
+// returns it. Otherwise constructs from GITHUB_SERVER_URL + GITHUB_REPOSITORY
+// environment variables when running in GitHub Actions.
+func ResolveRepository(explicit string) string {
+	if explicit != "" {
+		return explicit
+	}
+	serverURL := os.Getenv("GITHUB_SERVER_URL")
+	repo := os.Getenv("GITHUB_REPOSITORY")
+	if serverURL != "" && repo != "" {
+		return serverURL + "/" + repo
+	}
+	return ""
+}
