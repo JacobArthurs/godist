@@ -74,13 +74,12 @@ runs:
         chmod +x shipbin
         echo "$PWD" >> "$GITHUB_PATH"
 
-    - name: Configure npm registry
+    - name: Set up Node.js
       if: inputs.registry == 'npm'
-      shell: bash
-      run: |
-        NPMRC=$(mktemp -p "$RUNNER_TEMP" .npmrc.XXXXXX)
-        echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > "$NPMRC"
-        echo "NPM_CONFIG_USERCONFIG=$NPMRC" >> "$GITHUB_ENV"
+      uses: actions/setup-node@v4
+      with:
+        node-version: "24"
+        registry-url: https://registry.npmjs.org
 
     - name: Run shipbin
       shell: bash
