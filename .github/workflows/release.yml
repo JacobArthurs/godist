@@ -23,3 +23,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update Go module proxy
         run: GOPROXY=https://proxy.golang.org go list -m github.com/jacobarthurs/shipbin@${GITHUB_REF_NAME}
+      - name: Update floating major tag
+        run: |
+          MAJOR=$(echo "${GITHUB_REF_NAME}" | cut -d. -f1)
+          git tag -f "${MAJOR}"
+          git push origin "${MAJOR}" --force
