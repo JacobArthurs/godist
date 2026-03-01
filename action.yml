@@ -102,6 +102,7 @@ runs:
           [[ -n "${{ inputs.org }}" ]] && ARGS+=(--org "${{ inputs.org }}")
           ARGS+=(--tag "${{ inputs.tag }}")
           ARGS+=("--provenance=${{ inputs.provenance }}")
+          [[ -n "$GITHUB_SERVER_URL" && -n "$GITHUB_REPOSITORY" ]] && ARGS+=(--repository "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY")
           shipbin npm "${ARGS[@]}"
 
         elif [[ "${{ inputs.registry }}" = "pypi" ]]; then

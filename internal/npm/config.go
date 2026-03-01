@@ -13,4 +13,5 @@ type Config struct {
 	Tag        string
 	Provenance bool
 	Readme     string
+	Repository string
 }

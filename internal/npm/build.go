@@ -13,6 +13,7 @@ type packageJSON struct {
 	Version      string            `json:"version"`
 	Description  string            `json:"description"`
 	License      string            `json:"license"`
+	Repository   string            `json:"repository,omitempty"`
 	OS           []string          `json:"os,omitempty"`
 	CPU          []string          `json:"cpu,omitempty"`
 	Files        []string          `json:"files"`
@@ -66,6 +67,7 @@ func buildPlatformPackages(cfg *Config) ([]builtPackage, func(), error) {
 			Version:     cfg.Version,
 			Description: fmt.Sprintf("%s binary for %s", cfg.Name, a.Mapping.Npm.PackageSuffix),
 			License:     cfg.License,
+			Repository:  cfg.Repository,
 			OS:          []string{a.Mapping.Npm.OS},
 			CPU:         []string{a.Mapping.Npm.CPU},
 			Files:       []string{"bin"},
@@ -112,6 +114,7 @@ func buildRootPackage(cfg *Config) (builtPackage, func(), error) {
 		Version:      cfg.Version,
 		Description:  cfg.Summary,
 		License:      cfg.License,
+		Repository:   cfg.Repository,
 		Files:        []string{"bin"},
 		Bin:          map[string]string{cfg.Name: fmt.Sprintf("bin/%s", cfg.Name)},
 		OptionalDeps: optDeps,
