@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var pypiMintTokenURL = "https://pypi.org/_/oidc/mint-token/"
+var pypiMintTokenURL = "https://upload.pypi.org/_/oidc/mint-token"
 
 func mintToken() (string, error) {
 	if token := os.Getenv("PYPI_TOKEN"); token != "" {
