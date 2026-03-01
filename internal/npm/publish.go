@@ -96,6 +96,10 @@ func npmError(out []byte) string {
 			return "permission denied: ensure the token has write access to this package or org"
 		case "E409", "EPUBLISHCONFLICT":
 			return "version already exists: this version has already been published"
+		case "E422":
+			if strings.Contains(outStr, "private") {
+				return "provenance requires a public repository: change your GitHub repository visibility to public"
+			}
 		case "ENOTFOUND", "ETIMEDOUT", "ECONNREFUSED":
 			return "network error: unable to reach the npm registry, check your connection"
 		case "EUSAGE":
