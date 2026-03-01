@@ -24,7 +24,7 @@ permissions:
   id-token: write
 
 steps:
-  - uses: jacobarthurs/shipbin@v0
+  - uses: jacobarthurs/shipbin@v1
     with:
       registry: npm
       name: mytool
@@ -46,7 +46,7 @@ permissions:
   id-token: write
 
 steps:
-  - uses: jacobarthurs/shipbin@v0
+  - uses: jacobarthurs/shipbin@v1
     with:
       registry: pypi
       name: mytool
