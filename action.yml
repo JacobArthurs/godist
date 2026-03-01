@@ -1,6 +1,10 @@
 name: shipbin
 description: Publish pre-built binaries to npm and PyPI
 
+branding:
+  icon: upload-cloud
+  color: blue
+
 inputs:
   registry:
     description: Target registry (npm or pypi)
