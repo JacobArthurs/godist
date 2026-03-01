@@ -17,7 +17,7 @@ The examples below use OIDC, no tokens or secrets required. Token-based auth is 
 
 ### npm
 
-Requires an npm org with [provenance](https://docs.npmjs.com/generating-provenance-statements) enabled.
+Requires an npm org with [provenance](https://docs.npmjs.com/generating-provenance-statements) enabled. Because shipbin publishes a root package plus one package per platform, all package names must be accessible with your publish credentials.
 
 ```yaml
 permissions:
@@ -131,7 +131,7 @@ shipbin npm \
   --artifact darwin/amd64:./dist/mytool-darwin-amd64 \
   --artifact darwin/arm64:./dist/mytool-darwin-arm64 \
   --artifact windows/amd64:./dist/mytool-windows-amd64.exe \
-  --summary "My awesome tool" \
+  --summary "My new tool" \
   --license MIT \
   --readme ./README.md
 ```
@@ -155,7 +155,7 @@ shipbin pypi \
   --artifact darwin/amd64:./dist/mytool-darwin-amd64 \
   --artifact darwin/arm64:./dist/mytool-darwin-arm64 \
   --artifact windows/amd64:./dist/mytool-windows-amd64.exe \
-  --summary "My awesome tool" \
+  --summary "My new tool" \
   --license MIT \
   --readme ./README.md
 ```
