@@ -29,6 +29,17 @@ go install github.com/jacobarthurs/shipbin@latest
 
 Or download a pre-built binary from the [releases page](https://github.com/jacobarthurs/shipbin/releases).
 
+## Prerequisites
+
+### npm
+
+- **[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)** must be installed and on your `PATH`. shipbin calls `npm publish` directly.
+- The **npm org** (`--org`) must already exist on [npmjs.com](https://www.npmjs.com/org/create) before publishing. shipbin does not create it.
+
+### Both
+
+- **[git](https://git-scm.com/)** must be installed if you omit `--version`. shipbin uses `git describe --tags --exact-match` to resolve the version from the current tag.
+
 ## Supported platforms
 
 | Go target         | npm suffix      | PyPI wheel tag                                           |
@@ -116,19 +127,11 @@ If `--version` is not provided, shipbin runs `git describe --tags --exact-match`
 
 ### npm
 
-shipbin calls `npm publish` using whatever credentials are configured in your environment. In GitHub Actions, use [npm's built-in `NODE_AUTH_TOKEN`](https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages):
-
-```yaml
-- uses: actions/setup-node@v4
-  with:
-    node-version: '20'
-    registry-url: 'https://registry.npmjs.org'
-- run: shipbin npm ...
-  env:
-    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
+shipbin calls `npm publish` using whatever credentials are configured in your environment. Use [npm's built-in `NODE_AUTH_TOKEN`](https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages)
 
 Provenance attestation (`--provenance`) requires CI environment variables set by GitHub Actions. Use `--provenance=false` when publishing locally.
+
+For local publishing, set `NODE_AUTH_TOKEN` to a token with 2FA disabled, otherwise the publish will be rejected.
 
 ### PyPI
 
