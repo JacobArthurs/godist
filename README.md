@@ -11,19 +11,7 @@ Publish native binaries to npm and PyPI from any language. Built for GitHub Acti
 
 `shipbin` takes pre-built binaries for multiple platforms and publishes them as installable packages. Users run `npm install -g mytool` or `pip install mytool` and get the right binary for their platform automatically.
 
-## How it works
-
-### npm
-
-For each artifact, shipbin builds a platform-specific package (e.g. `@myorg/mytool-linux-x64`) containing the binary. It then publishes a root package (`mytool`) that declares all platform packages as optional dependencies and includes a Node.js wrapper script. When users install the root package, npm resolves and installs only the package matching their platform.
-
-### PyPI
-
-For each artifact, shipbin builds a platform-specific wheel containing the binary and a Python shim (`__init__.py`). The shim locates and `exec`s the bundled binary at runtime. Each wheel targets a specific platform tag (e.g. `manylinux_2_17_x86_64`), so pip resolves and installs only the correct wheel for the user's platform.
-
 ## GitHub Actions
-
-The easiest way to use shipbin is with the official GitHub Action. No installation required.
 
 The examples below use OIDC, no tokens or secrets required. Token-based auth is also supported; see [Authentication](#authentication).
 
@@ -86,6 +74,16 @@ steps:
 | `tag`             | No       | `latest` | npm dist-tag (e.g. `latest`, `next`, `beta`)              |
 | `provenance`      | No       | `true`   | Publish with npm provenance attestation                   |
 | `shipbin-version` | No       | `latest` | Pin a specific shipbin version                            |
+
+## How it works
+
+### npm
+
+For each artifact, shipbin builds a platform-specific package (e.g. `@myorg/mytool-linux-x64`) containing the binary. It then publishes a root package (`mytool`) that declares all platform packages as optional dependencies and includes a Node.js wrapper script. When users install the root package, npm resolves and installs only the package matching their platform.
+
+### PyPI
+
+For each artifact, shipbin builds a platform-specific wheel containing the binary and a Python shim (`__init__.py`). The shim locates and `exec`s the bundled binary at runtime. Each wheel targets a specific platform tag (e.g. `manylinux_2_17_x86_64`), so pip resolves and installs only the correct wheel for the user's platform.
 
 ## Installation
 
