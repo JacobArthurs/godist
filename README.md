@@ -69,6 +69,7 @@ steps:
 | `summary`         | No       |          | Short package description                                 |
 | `license`         | No       |          | License identifier (e.g. `MIT`, `Apache-2.0`)             |
 | `readme`          | No       |          | Path to a README to include in the published package      |
+| `no-readme`       | No       | `false`  | Disable README auto-detection and omit readme from package |
 | `dry-run`         | No       | `false`  | Print what would be published without publishing          |
 | `org`             | npm only |          | npm org scope. `myorg` produces `@myorg/mytool-linux-x64` |
 | `tag`             | No       | `latest` | npm dist-tag (e.g. `latest`, `next`, `beta`)              |
@@ -182,6 +183,7 @@ This publishes five platform-specific wheels to the `mytool` package on PyPI. pi
 | `--org`        | (required) | npm org scope. `myorg` produces `@myorg/mytool-linux-x64` |
 | `--tag`        | `latest`   | dist-tag to publish under (e.g. `latest`, `next`, `beta`) |
 | `--provenance` | `true`     | Publish with npm provenance attestation (requires CI) |
+| `--repository` |            | Repository URL for `package.json`. Auto-detected in GitHub Actions. |
 
 ### Version resolution
 
