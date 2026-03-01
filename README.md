@@ -21,6 +21,72 @@ For each artifact, shipbin builds a platform-specific package (e.g. `@myorg/myto
 
 For each artifact, shipbin builds a platform-specific wheel containing the binary and a Python shim (`__init__.py`). The shim locates and `exec`s the bundled binary at runtime. Each wheel targets a specific platform tag (e.g. `manylinux_2_17_x86_64`), so pip resolves and installs only the correct wheel for the user's platform.
 
+## GitHub Actions
+
+The easiest way to use shipbin is with the official GitHub Action. No installation required.
+
+The examples below use OIDC, no tokens or secrets required. Token-based auth is also supported; see [Authentication](#authentication).
+
+### npm
+
+Requires an npm org with [provenance](https://docs.npmjs.com/generating-provenance-statements) enabled.
+
+```yaml
+permissions:
+  id-token: write
+
+steps:
+  - uses: jacobarthurs/shipbin@v0
+    with:
+      registry: npm
+      name: mytool
+      org: myorg
+      artifacts: |
+        linux/amd64:./dist/mytool-linux-amd64
+        linux/arm64:./dist/mytool-linux-arm64
+        darwin/amd64:./dist/mytool-darwin-amd64
+        darwin/arm64:./dist/mytool-darwin-arm64
+        windows/amd64:./dist/mytool-windows-amd64.exe
+```
+
+### PyPI
+
+Requires a [trusted publisher](https://pypi.org/manage/account/publishing/) registered on PyPI for your repository.
+
+```yaml
+permissions:
+  id-token: write
+
+steps:
+  - uses: jacobarthurs/shipbin@v0
+    with:
+      registry: pypi
+      name: mytool
+      artifacts: |
+        linux/amd64:./dist/mytool-linux-amd64
+        linux/arm64:./dist/mytool-linux-arm64
+        darwin/amd64:./dist/mytool-darwin-amd64
+        darwin/arm64:./dist/mytool-darwin-arm64
+        windows/amd64:./dist/mytool-windows-amd64.exe
+```
+
+### Action inputs
+
+| Input             | Required | Default  | Description                                               |
+|-------------------|----------|----------|-----------------------------------------------------------|
+| `registry`        | Yes      |          | `npm` or `pypi`                                           |
+| `name`            | Yes      |          | Binary name                                               |
+| `artifacts`       | Yes      |          | Newline-separated `os/arch:path` mappings                 |
+| `version`         | No       |          | Release version. Defaults to the current git tag          |
+| `summary`         | No       |          | Short package description                                 |
+| `license`         | No       |          | License identifier (e.g. `MIT`, `Apache-2.0`)             |
+| `readme`          | No       |          | Path to a README to include in the published package      |
+| `dry-run`         | No       | `false`  | Print what would be published without publishing          |
+| `org`             | npm only |          | npm org scope. `myorg` produces `@myorg/mytool-linux-x64` |
+| `tag`             | No       | `latest` | npm dist-tag (e.g. `latest`, `next`, `beta`)              |
+| `provenance`      | No       | `true`   | Publish with npm provenance attestation                   |
+| `shipbin-version` | No       | `latest` | Pin a specific shipbin version                            |
+
 ## Installation
 
 ```sh

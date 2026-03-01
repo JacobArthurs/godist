@@ -1,0 +1,112 @@
+name: shipbin
+description: Publish pre-built binaries to npm and PyPI
+
+inputs:
+  registry:
+    description: Target registry (npm or pypi)
+    required: true
+  name:
+    description: Binary name
+    required: true
+  artifacts:
+    description: Newline-separated os/arch:path mappings
+    required: true
+  version:
+    description: Release version (defaults to current git tag)
+    required: false
+  summary:
+    description: Short package description
+    required: false
+  license:
+    description: License identifier (e.g. MIT, Apache-2.0)
+    required: false
+  readme:
+    description: Path to README file to include in the published package
+    required: false
+  dry-run:
+    description: Print what would be published without publishing
+    required: false
+    default: 'false'
+
+  # npm-only
+  org:
+    description: npm org scope (required for npm)
+    required: false
+  tag:
+    description: npm dist-tag
+    required: false
+    default: latest
+  provenance:
+    description: Publish with npm provenance attestation
+    required: false
+    default: 'true'
+
+  # action meta
+  shipbin-version:
+    description: shipbin version to install (defaults to latest)
+    required: false
+    default: latest
+
+runs:
+  using: composite
+  steps:
+    - name: Install shipbin
+      shell: bash
+      run: |
+        VERSION="${{ inputs.shipbin-version }}"
+        if [ "$VERSION" = "latest" ]; then
+          VERSION=$(curl -sf https://api.github.com/repos/jacobarthurs/shipbin/releases/latest \
+            | grep '"tag_name"' | cut -d'"' -f4)
+        fi
+
+        OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+        ARCH=$(uname -m)
+        case "$ARCH" in
+          x86_64)  ARCH="amd64" ;;
+          aarch64) ARCH="arm64" ;;
+        esac
+
+        echo "Installing shipbin $VERSION"
+        curl -sSfL \
+          "https://github.com/jacobarthurs/shipbin/releases/download/${VERSION}/shipbin_${VERSION#v}_${OS}_${ARCH}.tar.gz" \
+          | tar -xz shipbin
+
+        chmod +x shipbin
+        echo "$PWD" >> "$GITHUB_PATH"
+
+    - name: Set up Node.js
+      if: inputs.registry == 'npm'
+      uses: actions/setup-node@v4
+      with:
+        registry-url: https://registry.npmjs.org
+
+    - name: Run shipbin
+      shell: bash
+      run: |
+        ARGS=()
+        ARGS+=(--name "${{ inputs.name }}")
+
+        while IFS= read -r line; do
+          [[ -z "$line" ]] && continue
+          ARGS+=(--artifact "$line")
+        done <<< "${{ inputs.artifacts }}"
+
+        [[ -n "${{ inputs.version }}" ]] && ARGS+=(--version "${{ inputs.version }}")
+        [[ -n "${{ inputs.summary }}" ]] && ARGS+=(--summary "${{ inputs.summary }}")
+        [[ -n "${{ inputs.license }}" ]] && ARGS+=(--license "${{ inputs.license }}")
+        [[ -n "${{ inputs.readme }}" ]]  && ARGS+=(--readme "${{ inputs.readme }}")
+        [[ "${{ inputs.dry-run }}" = "true" ]] && ARGS+=(--dry-run)
+
+        if [[ "${{ inputs.registry }}" = "npm" ]]; then
+          [[ -n "${{ inputs.org }}" ]] && ARGS+=(--org "${{ inputs.org }}")
+          ARGS+=(--tag "${{ inputs.tag }}")
+          ARGS+=("--provenance=${{ inputs.provenance }}")
+          shipbin npm "${ARGS[@]}"
+
+        elif [[ "${{ inputs.registry }}" = "pypi" ]]; then
+          shipbin pypi "${ARGS[@]}"
+
+        else
+          echo "shipbin: unknown registry '${{ inputs.registry }}' — must be npm or pypi"
+          exit 1
+        fi
