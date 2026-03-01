@@ -35,6 +35,7 @@ steps:
         darwin/amd64:./dist/mytool-darwin-amd64
         darwin/arm64:./dist/mytool-darwin-arm64
         windows/amd64:./dist/mytool-windows-amd64.exe
+        windows/arm64:./dist/mytool-windows-arm64.exe
 ```
 
 ### PyPI
@@ -56,6 +57,7 @@ steps:
         darwin/amd64:./dist/mytool-darwin-amd64
         darwin/arm64:./dist/mytool-darwin-arm64
         windows/amd64:./dist/mytool-windows-amd64.exe
+        windows/arm64:./dist/mytool-windows-arm64.exe
 ```
 
 ### Action inputs
@@ -131,6 +133,7 @@ shipbin npm \
   --artifact darwin/amd64:./dist/mytool-darwin-amd64 \
   --artifact darwin/arm64:./dist/mytool-darwin-arm64 \
   --artifact windows/amd64:./dist/mytool-windows-amd64.exe \
+  --artifact windows/arm64:./dist/mytool-windows-arm64.exe \
   --summary "My new tool" \
   --license MIT \
   --readme ./README.md
@@ -143,6 +146,7 @@ This publishes:
 - `@myorg/mytool-darwin-x64@<version>`
 - `@myorg/mytool-darwin-arm64@<version>`
 - `@myorg/mytool-win32-x64@<version>`
+- `@myorg/mytool-win32-arm64@<version>`
 - `mytool@<version>` (root package with optional dependencies + wrapper script)
 
 ### PyPI
@@ -155,12 +159,13 @@ shipbin pypi \
   --artifact darwin/amd64:./dist/mytool-darwin-amd64 \
   --artifact darwin/arm64:./dist/mytool-darwin-arm64 \
   --artifact windows/amd64:./dist/mytool-windows-amd64.exe \
+  --artifact windows/arm64:./dist/mytool-windows-arm64.exe \
   --summary "My new tool" \
   --license MIT \
   --readme ./README.md
 ```
 
-This publishes five platform-specific wheels to the `mytool` package on PyPI. pip automatically selects the correct wheel for the user's platform.
+This publishes six platform-specific wheels to the `mytool` package on PyPI. pip automatically selects the correct wheel for the user's platform.
 
 ## Flags
 
