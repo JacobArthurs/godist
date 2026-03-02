@@ -100,7 +100,9 @@ runs:
           ARGS+=(--artifact "$line")
         done <<< "${{ inputs.artifacts }}"
 
-        [[ -n "${{ inputs.version }}" ]] && ARGS+=(--version "${{ inputs.version }}")
+        VERSION="${{ inputs.version }}"
+        [[ -z "$VERSION" && -n "${{ github.ref_name }}" ]] && VERSION="${{ github.ref_name }}"
+        [[ -n "$VERSION" ]] && ARGS+=(--version "$VERSION")
         [[ -n "${{ inputs.summary }}" ]] && ARGS+=(--summary "${{ inputs.summary }}")
         [[ -n "${{ inputs.license }}" ]] && ARGS+=(--license "${{ inputs.license }}")
         [[ -n "${{ inputs.readme }}" ]] && ARGS+=(--readme "${{ inputs.readme }}")
