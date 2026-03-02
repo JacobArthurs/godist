@@ -28,7 +28,8 @@ if (!pkg) {
 
 let binPath;
 try {
-  binPath = require.resolve(`${pkg}/bin/${BIN_NAME}`);
+  const binFile = process.platform === "win32" ? `${BIN_NAME}.exe` : BIN_NAME;
+  binPath = require.resolve(`${pkg}/bin/${binFile}`);
 } catch (e) {
   console.error(
     `${BIN_NAME}: could not find platform package ${pkg}\n` +
