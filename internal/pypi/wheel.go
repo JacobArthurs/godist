@@ -129,7 +129,6 @@ func addFileToZip(zw *zip.Writer, path string, data []byte, mode os.FileMode, re
 		UncompressedSize64: uint64(len(data)),
 	}
 	header.SetMode(mode)
-	header.ExternalAttrs = uint32(mode) << 16
 
 	w, err := zw.CreateRaw(header)
 	if err != nil {
