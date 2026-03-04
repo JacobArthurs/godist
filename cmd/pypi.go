@@ -17,6 +17,19 @@ var pypiCmd = &cobra.Command{
 Builds a platform-specific wheel for each artifact containing the binary and a
 Python shim that locates and executes it. Users install the package with pip and
 the correct wheel is resolved automatically based on their platform.`,
+	Example: `  # Publish pre-built binaries
+  shipbin pypi --name mytool --version v1.2.3 \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool \
+    --artifact darwin/amd64:dist/mytool_darwin_amd64/mytool \
+    --artifact windows/amd64:dist/mytool_windows_amd64/mytool.exe
+
+  # Dry run to preview without publishing
+  shipbin pypi --name mytool --dry-run \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool
+
+  # Publish with a license and summary
+  shipbin pypi --name mytool --license MIT --summary "A useful CLI tool" \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, err := buildPypiConfig()
 		if err != nil {

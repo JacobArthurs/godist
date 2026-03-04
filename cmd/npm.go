@@ -25,6 +25,19 @@ Builds a platform-specific package for each artifact (e.g. @org/name-linux-x64)
 containing the binary, then publishes a root package (e.g. name) that declares
 them as optional dependencies. Users install the root package and npm resolves
 the correct platform package automatically.`,
+	Example: `  # Publish pre-built binaries
+  shipbin npm --org myorg --name mytool --version v1.2.3 \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool \
+    --artifact darwin/amd64:dist/mytool_darwin_amd64/mytool \
+    --artifact windows/amd64:dist/mytool_windows_amd64/mytool.exe
+
+  # Dry run to preview without publishing
+  shipbin npm --org myorg --name mytool --dry-run \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool
+
+  # Publish under a beta dist-tag
+  shipbin npm --org myorg --name mytool --tag beta \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, err := buildNpmConfig()
 		if err != nil {

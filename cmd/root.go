@@ -28,6 +28,17 @@ var rootCmd = &cobra.Command{
 
 Assembles platform-specific packages from the provided artifacts,
 then publishes them to the target registry.`,
+	Example: `  # Publish to npm
+  shipbin npm --org myorg --name mytool \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool \
+    --artifact darwin/arm64:dist/mytool_darwin_arm64/mytool \
+    --artifact windows/amd64:dist/mytool_windows_amd64/mytool.exe
+
+  # Publish to PyPI
+  shipbin pypi --name mytool \
+    --artifact linux/amd64:dist/mytool_linux_amd64/mytool \
+    --artifact darwin/arm64:dist/mytool_darwin_arm64/mytool \
+    --artifact windows/amd64:dist/mytool_windows_amd64/mytool.exe`,
 }
 
 func init() {
