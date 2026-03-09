@@ -40,13 +40,7 @@ func TestToPyPIVersion(t *testing.T) {
 		})
 	}
 
-	invalid := []string{
-		"1.0.0-alpha",
-		"1.0.0-beta.1",
-		"v1.0.0",
-		"abc",
-		"",
-	}
+	invalid := []string{"1.0.0-alpha", "1.0.0-beta.1", "v1.0.0", "abc", ""}
 	for _, v := range invalid {
 		t.Run("invalid:"+v, func(t *testing.T) {
 			_, err := toPyPIVersion(v)

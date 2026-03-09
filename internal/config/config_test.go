@@ -138,10 +138,7 @@ func TestParseArtifacts_WindowsTargetSkipsExeCheck(t *testing.T) {
 func TestParseArtifacts_DuplicatePlatform(t *testing.T) {
 	dir := t.TempDir()
 	p := makeExe(t, dir, "bin")
-	_, err := ParseArtifacts([]string{
-		"linux/amd64:" + p,
-		"linux/amd64:" + p,
-	})
+	_, err := ParseArtifacts([]string{"linux/amd64:" + p, "linux/amd64:" + p})
 	if err == nil {
 		t.Fatal("expected error for duplicate platform, got nil")
 	}
@@ -151,10 +148,7 @@ func TestParseArtifacts_DuplicatePlatform(t *testing.T) {
 }
 
 func TestParseArtifacts_CollectsMultipleErrors(t *testing.T) {
-	_, err := ParseArtifacts([]string{
-		"bad-entry-one",
-		"bad-entry-two",
-	})
+	_, err := ParseArtifacts([]string{"bad-entry-one", "bad-entry-two"})
 	if err == nil {
 		t.Fatal("expected errors, got nil")
 	}

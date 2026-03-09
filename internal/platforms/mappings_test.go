@@ -1,8 +1,6 @@
 package platforms
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestLookup(t *testing.T) {
 	tests := []struct {
