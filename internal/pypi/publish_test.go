@@ -15,7 +15,6 @@ import (
 func TestUploadWheel_Success(t *testing.T) {
 	data := []byte("fake wheel zip content")
 	hash := sha256.Sum256(data)
-	expectedDigest := hex.EncodeToString(hash[:])
 
 	var (
 		receivedUser   string
@@ -37,8 +36,8 @@ func TestUploadWheel_Success(t *testing.T) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		mr := multipart.NewReader(r.Body, params["boundary"])
-		for {
+
+		for mr := multipart.NewReader(r.Body, params["boundary"]); ; {
 			part, err := mr.NextPart()
 			if err == io.EOF {
 				break
@@ -47,8 +46,8 @@ func TestUploadWheel_Success(t *testing.T) {
 				t.Errorf("reading multipart part: %v", err)
 				break
 			}
-			b, _ := io.ReadAll(part)
-			if part.FormName() == "content" {
+
+			if b, _ := io.ReadAll(part); part.FormName() == "content" {
 				receivedFile = b
 			} else {
 				receivedFields[part.FormName()] = string(b)
@@ -87,7 +86,7 @@ func TestUploadWheel_Success(t *testing.T) {
 	if receivedFields["version"] != "1.0.0" {
 		t.Errorf("version = %q, want %q", receivedFields["version"], "1.0.0")
 	}
-	if receivedFields["sha256_digest"] != expectedDigest {
+	if expectedDigest := hex.EncodeToString(hash[:]); receivedFields["sha256_digest"] != expectedDigest {
 		t.Errorf("sha256_digest = %q, want %q", receivedFields["sha256_digest"], expectedDigest)
 	}
 	if receivedFields[":action"] != "file_upload" {
@@ -126,8 +125,8 @@ func TestUploadWheel_OptionalFieldsOmitted(t *testing.T) {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, params, _ := mime.ParseMediaType(r.Header.Get("Content-Type"))
-		mr := multipart.NewReader(r.Body, params["boundary"])
-		for {
+
+		for mr := multipart.NewReader(r.Body, params["boundary"]); ; {
 			part, err := mr.NextPart()
 			if err == io.EOF {
 				break
@@ -200,8 +199,8 @@ func TestPypiError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(http.StatusText(tt.status), func(t *testing.T) {
-			got := pypiError(tt.status)
-			if !strings.Contains(got, tt.wantSub) {
+
+			if got := pypiError(tt.status); !strings.Contains(got, tt.wantSub) {
 				t.Errorf("pypiError(%d) = %q, want substring %q", tt.status, got, tt.wantSub)
 			}
 		})

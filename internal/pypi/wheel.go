@@ -174,8 +174,8 @@ func readReadme(path string) (content, contentType string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	lower := strings.ToLower(path)
-	switch {
+
+	switch lower := strings.ToLower(path); {
 	case strings.HasSuffix(lower, ".md"), strings.HasSuffix(lower, ".markdown"):
 		contentType = "text/markdown"
 	case strings.HasSuffix(lower, ".rst"):
