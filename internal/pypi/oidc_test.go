@@ -37,8 +37,7 @@ func TestRequestOIDCToken_NonOKStatus(t *testing.T) {
 	}))
 	defer server.Close()
 
-	_, err := requestOIDCToken(server.URL, "bad-token")
-	if err == nil {
+	if _, err := requestOIDCToken(server.URL, "bad-token"); err == nil {
 		t.Fatal("expected error for non-200 status, got nil")
 	}
 }
@@ -50,15 +49,14 @@ func TestRequestOIDCToken_EmptyTokenValue(t *testing.T) {
 	}))
 	defer server.Close()
 
-	_, err := requestOIDCToken(server.URL, "token")
-	if err == nil {
+	if _, err := requestOIDCToken(server.URL, "token"); err == nil {
 		t.Fatal("expected error for empty token value, got nil")
 	}
 }
 
 func TestRequestOIDCToken_InvalidURL(t *testing.T) {
-	_, err := requestOIDCToken("://not-a-valid-url", "token")
-	if err == nil {
+
+	if _, err := requestOIDCToken("://not-a-valid-url", "token"); err == nil {
 		t.Fatal("expected error for invalid URL, got nil")
 	}
 }
@@ -72,8 +70,7 @@ func TestRequestOIDCToken_AppendAudienceToExistingQuery(t *testing.T) {
 	}))
 	defer server.Close()
 
-	_, err := requestOIDCToken(server.URL+"?existing=1", "token")
-	if err != nil {
+	if _, err := requestOIDCToken(server.URL+"?existing=1", "token"); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 	if !strings.Contains(capturedQuery, "audience=pypi") {
@@ -146,8 +143,7 @@ func TestExchangeForUploadToken_NonOKStatus(t *testing.T) {
 	pypiMintTokenURL = server.URL
 	defer func() { pypiMintTokenURL = orig }()
 
-	_, err := exchangeForUploadToken("oidc-jwt")
-	if err == nil {
+	if _, err := exchangeForUploadToken("oidc-jwt"); err == nil {
 		t.Fatal("expected error for non-200 status, got nil")
 	}
 }
@@ -163,8 +159,7 @@ func TestExchangeForUploadToken_EmptyToken(t *testing.T) {
 	pypiMintTokenURL = server.URL
 	defer func() { pypiMintTokenURL = orig }()
 
-	_, err := exchangeForUploadToken("oidc-jwt")
-	if err == nil {
+	if _, err := exchangeForUploadToken("oidc-jwt"); err == nil {
 		t.Fatal("expected error for empty upload token, got nil")
 	}
 }

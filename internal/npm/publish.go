@@ -69,8 +69,8 @@ func npmPublish(dir, tag string, provenance, dryRun bool) error {
 	}
 	cmd := exec.Command("npm", args...)
 	cmd.Dir = dir
-	out, err := cmd.CombinedOutput()
-	if err != nil {
+
+	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("%s", npmError(out))
 	}
 	return nil
@@ -112,12 +112,10 @@ func npmError(out []byte) string {
 }
 
 func pollUntilVisible(pkgName, version string) error {
-	url := fmt.Sprintf("https://registry.npmjs.org/%s/%s", pkgName, version)
-	deadline := time.Now().Add(registryPollTimeout)
 
-	for time.Now().Before(deadline) {
-		resp, err := http.Get(url)
-		if err == nil {
+	for url, deadline := fmt.Sprintf("https://registry.npmjs.org/%s/%s", pkgName, version), time.Now().Add(registryPollTimeout); time.Now().Before(deadline); {
+
+		if resp, err := http.Get(url); err == nil {
 			_ = resp.Body.Close()
 			if resp.StatusCode == http.StatusOK {
 				return nil

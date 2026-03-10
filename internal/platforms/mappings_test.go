@@ -1,8 +1,6 @@
 package platforms
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestLookup(t *testing.T) {
 	tests := []struct {
@@ -52,8 +50,8 @@ func TestLookup_Unsupported(t *testing.T) {
 		{"darwin", "386"},
 	}
 	for _, c := range cases {
-		_, err := Lookup(c[0], c[1])
-		if err == nil {
+
+		if _, err := Lookup(c[0], c[1]); err == nil {
 			t.Errorf("Lookup(%q, %q) expected error, got nil", c[0], c[1])
 		}
 	}
@@ -67,8 +65,8 @@ func TestAll(t *testing.T) {
 	}
 
 	for i := 1; i < len(all); i++ {
-		a, b := all[i-1], all[i]
-		if a.GOOS > b.GOOS || (a.GOOS == b.GOOS && a.GOARCH > b.GOARCH) {
+
+		if a, b := all[i-1], all[i]; a.GOOS > b.GOOS || (a.GOOS == b.GOOS && a.GOARCH > b.GOARCH) {
 			t.Errorf("All() not sorted at index %d: %s/%s comes before %s/%s",
 				i, b.GOOS, b.GOARCH, a.GOOS, a.GOARCH)
 		}

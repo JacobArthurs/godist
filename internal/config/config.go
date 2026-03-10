@@ -127,9 +127,8 @@ func ResolveRepository(explicit string) string {
 	if explicit != "" {
 		return explicit
 	}
-	serverURL := os.Getenv("GITHUB_SERVER_URL")
-	repo := os.Getenv("GITHUB_REPOSITORY")
-	if serverURL != "" && repo != "" {
+
+	if serverURL, repo := os.Getenv("GITHUB_SERVER_URL"), os.Getenv("GITHUB_REPOSITORY"); serverURL != "" && repo != "" {
 		return serverURL + "/" + repo
 	}
 	return ""

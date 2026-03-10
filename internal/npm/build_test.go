@@ -322,8 +322,8 @@ func TestCopyFile(t *testing.T) {
 
 func TestCopyFile_MissingSrc(t *testing.T) {
 	dir := t.TempDir()
-	err := copyFile(filepath.Join(dir, "nonexistent"), filepath.Join(dir, "dst"), 0644)
-	if err == nil {
+
+	if err := copyFile(filepath.Join(dir, "nonexistent"), filepath.Join(dir, "dst"), 0644); err == nil {
 		t.Fatal("expected error for missing source, got nil")
 	}
 }

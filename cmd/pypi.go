@@ -63,5 +63,4 @@ func buildPypiConfig() (*pypi.Config, error) {
 	return cfg, nil
 }
 
-func init() {
-}
+func init() {}

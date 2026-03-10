@@ -40,17 +40,11 @@ func TestToPyPIVersion(t *testing.T) {
 		})
 	}
 
-	invalid := []string{
-		"1.0.0-alpha",
-		"1.0.0-beta.1",
-		"v1.0.0",
-		"abc",
-		"",
-	}
+	invalid := []string{"1.0.0-alpha", "1.0.0-beta.1", "v1.0.0", "abc", ""}
 	for _, v := range invalid {
 		t.Run("invalid:"+v, func(t *testing.T) {
-			_, err := toPyPIVersion(v)
-			if err == nil {
+
+			if _, err := toPyPIVersion(v); err == nil {
 				t.Errorf("toPyPIVersion(%q) expected error, got nil", v)
 			}
 		})
@@ -102,8 +96,8 @@ func TestReadReadme_Empty(t *testing.T) {
 }
 
 func TestReadReadme_MissingFile(t *testing.T) {
-	_, _, err := readReadme("/does/not/exist/README.md")
-	if err == nil {
+
+	if _, _, err := readReadme("/does/not/exist/README.md"); err == nil {
 		t.Fatal("expected error for missing file, got nil")
 	}
 }
@@ -190,8 +184,7 @@ func TestBuildWheel_ZipStructure(t *testing.T) {
 		t.Fatalf("buildWheel: %v", err)
 	}
 
-	expectedFilename := "mytool-1.0.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
-	if wf.filename != expectedFilename {
+	if expectedFilename := "mytool-1.0.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"; wf.filename != expectedFilename {
 		t.Errorf("filename = %q, want %q", wf.filename, expectedFilename)
 	}
 	if wf.version != "1.0.0" {
@@ -260,8 +253,7 @@ func TestBuildWheel_InvalidPEP440Version(t *testing.T) {
 		Version: "1.0.0-beta",
 	}
 
-	_, err := buildWheel(cfg, a)
-	if err == nil {
+	if _, err := buildWheel(cfg, a); err == nil {
 		t.Fatal("expected error for non-PEP 440 version, got nil")
 	}
 }
@@ -315,8 +307,8 @@ func TestBuildWheel_RecordContainsHashes(t *testing.T) {
 				t.Fatalf("failed to read RECORD: %v", err)
 			}
 			_ = rc.Close()
-			record := buf.String()
-			if !strings.Contains(record, "sha256=") {
+
+			if record := buf.String(); !strings.Contains(record, "sha256=") {
 				t.Errorf("RECORD should contain sha256 hashes, got:\n%s", record)
 			}
 			return
@@ -379,8 +371,8 @@ func TestBuildWheel_ZipFileModes(t *testing.T) {
 	}
 
 	for _, f := range zr.File {
-		perm := f.Mode().Perm()
-		switch f.Name {
+
+		switch perm := f.Mode().Perm(); f.Name {
 		case "mytool/bin/mytool":
 			if perm != 0755 {
 				t.Errorf("binary %s has mode %04o, want 0755", f.Name, perm)

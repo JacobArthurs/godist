@@ -61,15 +61,15 @@ func TestParseArtifacts_MultipleValid(t *testing.T) {
 }
 
 func TestParseArtifacts_MissingColon(t *testing.T) {
-	_, err := ParseArtifacts([]string{"linux/amd64/path/to/bin"})
-	if err == nil {
+
+	if _, err := ParseArtifacts([]string{"linux/amd64/path/to/bin"}); err == nil {
 		t.Fatal("expected error for missing colon, got nil")
 	}
 }
 
 func TestParseArtifacts_MissingSlash(t *testing.T) {
-	_, err := ParseArtifacts([]string{"linuxamd64:/some/path"})
-	if err == nil {
+
+	if _, err := ParseArtifacts([]string{"linuxamd64:/some/path"}); err == nil {
 		t.Fatal("expected error for missing slash in platform, got nil")
 	}
 }
@@ -85,8 +85,8 @@ func TestParseArtifacts_UnsupportedPlatform(t *testing.T) {
 }
 
 func TestParseArtifacts_FileNotFound(t *testing.T) {
-	_, err := ParseArtifacts([]string{"linux/amd64:/does/not/exist/binary"})
-	if err == nil {
+
+	if _, err := ParseArtifacts([]string{"linux/amd64:/does/not/exist/binary"}); err == nil {
 		t.Fatal("expected error for missing file, got nil")
 	}
 }
@@ -129,8 +129,8 @@ func TestParseArtifacts_WindowsTargetSkipsExeCheck(t *testing.T) {
 	if err := os.WriteFile(path, []byte("binary"), 0644); err != nil {
 		t.Fatal(err)
 	}
-	_, err := ParseArtifacts([]string{"windows/amd64:" + path})
-	if err != nil {
+
+	if _, err := ParseArtifacts([]string{"windows/amd64:" + path}); err != nil {
 		t.Fatalf("expected no error for windows target with no exe bit, got: %v", err)
 	}
 }
@@ -138,10 +138,7 @@ func TestParseArtifacts_WindowsTargetSkipsExeCheck(t *testing.T) {
 func TestParseArtifacts_DuplicatePlatform(t *testing.T) {
 	dir := t.TempDir()
 	p := makeExe(t, dir, "bin")
-	_, err := ParseArtifacts([]string{
-		"linux/amd64:" + p,
-		"linux/amd64:" + p,
-	})
+	_, err := ParseArtifacts([]string{"linux/amd64:" + p, "linux/amd64:" + p})
 	if err == nil {
 		t.Fatal("expected error for duplicate platform, got nil")
 	}
@@ -151,10 +148,7 @@ func TestParseArtifacts_DuplicatePlatform(t *testing.T) {
 }
 
 func TestParseArtifacts_CollectsMultipleErrors(t *testing.T) {
-	_, err := ParseArtifacts([]string{
-		"bad-entry-one",
-		"bad-entry-two",
-	})
+	_, err := ParseArtifacts([]string{"bad-entry-one", "bad-entry-two"})
 	if err == nil {
 		t.Fatal("expected errors, got nil")
 	}
@@ -212,8 +206,8 @@ func TestResolveVersion_ExplicitInvalid(t *testing.T) {
 	}
 	for _, v := range cases {
 		t.Run(v, func(t *testing.T) {
-			_, err := ResolveVersion(v)
-			if err == nil {
+
+			if _, err := ResolveVersion(v); err == nil {
 				t.Errorf("ResolveVersion(%q) expected error, got nil", v)
 			}
 		})
